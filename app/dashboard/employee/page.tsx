@@ -1,7 +1,9 @@
 'use client';
 
-import { currentUser, pendingApprovals, quickActions, actionCards, mockLeaveBalances } from '@/lib/mock-data';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { pendingApprovals, quickActions, actionCards, mockLeaveBalances } from '@/lib/mock-data';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAuth } from '@/context/auth-context';
+import { getInitials } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -33,6 +35,9 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 export default function EmployeeDashboard() {
+  const { user } = useAuth();
+  if (!user) return null;
+
   return (
     <div className="space-y-8">
       {/* Header Section */}
@@ -44,8 +49,9 @@ export default function EmployeeDashboard() {
           </p>
         </div>
         <Avatar className="h-16 w-16 bg-blue-200">
+          {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} />}
           <AvatarFallback className="bg-blue-200 text-xl font-semibold text-blue-800">
-            {currentUser.avatar}
+            {getInitials(user.name)}
           </AvatarFallback>
         </Avatar>
       </div>
@@ -53,19 +59,19 @@ export default function EmployeeDashboard() {
       {/* User Info Card */}
       <Card className="border-0 bg-gradient-to-r from-blue-50 to-indigo-50 p-6">
         <div className="space-y-2">
-          <h2 className="text-lg font-semibold text-gray-900">{currentUser.name}</h2>
+          <h2 className="text-lg font-semibold text-gray-900">{user.name}</h2>
           <div className="grid grid-cols-3 gap-4 text-sm">
             <div>
               <p className="text-gray-600">ID</p>
-              <p className="font-medium text-gray-900">{currentUser.employeeId}</p>
+              <p className="font-medium text-gray-900">{user.employeeId}</p>
             </div>
             <div>
               <p className="text-gray-600">Department</p>
-              <p className="font-medium text-gray-900">{currentUser.department}</p>
+              <p className="font-medium text-gray-900">{user.department}</p>
             </div>
             <div>
               <p className="text-gray-600">Designation</p>
-              <p className="font-medium text-gray-900">{currentUser.designation}</p>
+              <p className="font-medium text-gray-900">{user.designation}</p>
             </div>
           </div>
         </div>
