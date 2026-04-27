@@ -1,6 +1,7 @@
 'use client';
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useRef } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,14 +10,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell, LogOut, Settings } from 'lucide-react';
+import { Bell, LogOut, Settings, Upload, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
+import { getInitials } from '@/lib/utils';
 
 export function Header() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateAvatar, removeAvatar } = useAuth();
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!user) return null;
 
@@ -25,12 +28,19 @@ export function Header() {
     router.push('/login');
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase();
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please choose an image file.');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Image must be smaller than 2MB.');
+      return;
+    }
+    await updateAvatar(file);
+    e.target.value = '';
   };
 
   return (
@@ -45,10 +55,19 @@ export function Header() {
           <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500"></span>
         </button>
 
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-3 rounded-lg p-2 hover:bg-gray-100">
               <Avatar className="h-10 w-10 bg-blue-200">
+                {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} />}
                 <AvatarFallback className="bg-blue-200 text-blue-800 font-semibold">
                   {getInitials(user.name)}
                 </AvatarFallback>
@@ -63,6 +82,23 @@ export function Header() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="flex cursor-pointer items-center gap-2"
+              onSelect={() => fileInputRef.current?.click()}
+            >
+              <Upload size={16} />
+              {user.avatarUrl ? 'Change Photo' : 'Upload Photo'}
+            </DropdownMenuItem>
+            {user.avatarUrl && (
+              <DropdownMenuItem
+                className="flex cursor-pointer items-center gap-2"
+                onSelect={() => removeAvatar()}
+              >
+                <Trash2 size={16} />
+                Remove Photo
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href="/dashboard/profile" className="flex cursor-pointer items-center gap-2">

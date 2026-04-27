@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -15,6 +15,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showDemoUsers, setShowDemoUsers] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    router.push(user.role === 'admin' ? '/dashboard/admin' : '/dashboard/employee');
+  }, [user, router]);
 
   // Demo users for easy login
   const demoUsers = [
@@ -63,15 +68,7 @@ export default function LoginPage() {
     }
   };
 
-  // If already logged in, redirect
-  if (user) {
-    if (user.role === 'admin') {
-      router.push('/dashboard/admin');
-    } else {
-      router.push('/dashboard/employee');
-    }
-    return null;
-  }
+  if (user) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center px-4 py-12">

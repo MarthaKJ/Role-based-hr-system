@@ -8,7 +8,6 @@ export const currentUser: User = {
   department: 'Engineering',
   role: 'employee',
   employeeId: 'EMP001',
-  avatar: 'GN',
 };
 
 export const mockEmployees: User[] = [
@@ -21,7 +20,6 @@ export const mockEmployees: User[] = [
     department: 'Product',
     role: 'employee',
     employeeId: 'EMP002',
-    avatar: 'JD',
   },
   {
     id: '3',
@@ -31,7 +29,6 @@ export const mockEmployees: User[] = [
     department: 'Human Resources',
     role: 'hr',
     employeeId: 'EMP003',
-    avatar: 'JS',
   },
 ];
 

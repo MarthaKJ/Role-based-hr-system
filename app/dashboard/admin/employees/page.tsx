@@ -4,8 +4,9 @@ import { mockEmployees } from '@/lib/mock-data';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Plus, Edit, Trash2, Mail } from 'lucide-react';
+import { getInitials } from '@/lib/utils';
 
 export default function EmployeesPage() {
   return (
@@ -48,8 +49,11 @@ export default function EmployeesPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8 bg-blue-200">
+                        {employee.avatarUrl && (
+                          <AvatarImage src={employee.avatarUrl} alt={employee.name} />
+                        )}
                         <AvatarFallback className="bg-blue-200 text-blue-800 text-xs font-semibold">
-                          {employee.avatar}
+                          {getInitials(employee.name)}
                         </AvatarFallback>
                       </Avatar>
                       <span className="font-medium text-gray-900">{employee.name}</span>
