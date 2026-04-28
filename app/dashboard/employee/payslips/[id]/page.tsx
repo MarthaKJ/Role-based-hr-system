@@ -26,8 +26,8 @@ export default function PayslipDetailPage() {
             Back to Payslips
           </Button>
         </Link>
-        <div className="rounded-lg border bg-white p-8 text-center">
-          <p className="text-gray-600">Payslip not found.</p>
+        <div className="rounded-lg border border-border bg-card p-8 text-center">
+          <p className="text-muted-foreground">Payslip not found.</p>
         </div>
       </div>
     );
@@ -46,7 +46,7 @@ export default function PayslipDetailPage() {
             Back to Payslips
           </Button>
         </Link>
-        <h1 className="mt-4 text-3xl font-bold text-gray-900">
+        <h1 className="mt-4 text-3xl font-semibold text-foreground">
           {getMonthName(payslip.month)} {payslip.year} Payslip
         </h1>
       </div>

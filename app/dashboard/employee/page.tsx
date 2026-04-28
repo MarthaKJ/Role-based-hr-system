@@ -1,16 +1,13 @@
 'use client';
 
-import { pendingApprovals, quickActions, actionCards, mockLeaveBalances } from '@/lib/mock-data';
+import { useMemo } from 'react';
+import { actionCards, mockLeaveBalances, mockLeaveRequests } from '@/lib/mock-data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/context/auth-context';
 import { getInitials } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  Calendar,
-  CalendarDays,
-  Clock,
   CreditCard,
   FileText,
   FileIcon,
@@ -18,148 +15,171 @@ import {
   ShoppingCart,
   ShoppingBag,
   Plane,
-  ArrowRight,
+  ArrowUpRight,
 } from 'lucide-react';
 import Link from 'next/link';
 
 const iconMap: Record<string, React.ReactNode> = {
-  Calendar: <Calendar size={24} className="text-blue-500" />,
-  CalendarDays: <CalendarDays size={24} className="text-purple-500" />,
-  Clock: <Clock size={24} className="text-green-500" />,
-  CreditCard: <CreditCard size={24} className="text-orange-500" />,
-  FileText: <FileText size={24} className="text-indigo-500" />,
-  Star: <Star size={24} className="text-yellow-500" />,
-  ShoppingCart: <ShoppingCart size={24} className="text-pink-500" />,
-  ShoppingBag: <ShoppingBag size={24} className="text-cyan-500" />,
-  Plane: <Plane size={24} className="text-teal-500" />,
+  FileText: <FileText className="h-5 w-5" />,
+  Star: <Star className="h-5 w-5" />,
+  ShoppingCart: <ShoppingCart className="h-5 w-5" />,
+  ShoppingBag: <ShoppingBag className="h-5 w-5" />,
+  CreditCard: <CreditCard className="h-5 w-5" />,
+  Plane: <Plane className="h-5 w-5" />,
 };
 
 export default function EmployeeDashboard() {
   const { user } = useAuth();
+
+  const stats = useMemo(() => {
+    const pendingLeave = mockLeaveRequests.filter((r) => r.status === 'pending').length;
+    const approvedLeave = mockLeaveRequests.filter((r) => r.status === 'approved').length;
+    const totalLeaveBalance = mockLeaveBalances.reduce((sum, l) => sum + l.balance, 0);
+    return { pendingLeave, approvedLeave, totalLeaveBalance };
+  }, []);
+
+  const cards = useMemo(
+    () =>
+      actionCards.map((card) =>
+        card.title === 'Leave Requests' ? { ...card, count: stats.pendingLeave } : card,
+      ),
+    [stats.pendingLeave],
+  );
+
   if (!user) return null;
 
+  const firstName = user.name.split(' ')[0];
+
   return (
-    <div className="space-y-8">
-      {/* Header Section */}
+    <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Welcome back!</h1>
-          <p className="mt-2 text-gray-600">
-            Here&apos;s what happening with your HR portal today.
+          <h1 className="text-3xl font-semibold text-foreground">Welcome back, {firstName}.</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Here&apos;s what&apos;s happening with your HR portal today.
           </p>
         </div>
-        <Avatar className="h-16 w-16 bg-blue-200">
+        <Avatar className="h-14 w-14">
           {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} />}
-          <AvatarFallback className="bg-blue-200 text-xl font-semibold text-blue-800">
+          <AvatarFallback className="bg-blue-100 text-base font-semibold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
             {getInitials(user.name)}
           </AvatarFallback>
         </Avatar>
       </div>
 
-      {/* User Info Card */}
-      <Card className="border-0 bg-gradient-to-r from-blue-50 to-indigo-50 p-6">
-        <div className="space-y-2">
-          <h2 className="text-lg font-semibold text-gray-900">{user.name}</h2>
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            <div>
-              <p className="text-gray-600">ID</p>
-              <p className="font-medium text-gray-900">{user.employeeId}</p>
-            </div>
-            <div>
-              <p className="text-gray-600">Department</p>
-              <p className="font-medium text-gray-900">{user.department}</p>
-            </div>
-            <div>
-              <p className="text-gray-600">Designation</p>
-              <p className="font-medium text-gray-900">{user.designation}</p>
-            </div>
+      {/* Identity strip */}
+      <Card className="border border-border bg-card p-5 shadow-none">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Name</p>
+            <p className="mt-1 text-sm font-medium text-foreground">{user.name}</p>
+          </div>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Employee ID
+            </p>
+            <p className="mt-1 text-sm font-medium text-foreground">{user.employeeId}</p>
+          </div>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Department
+            </p>
+            <p className="mt-1 text-sm font-medium text-foreground">{user.department}</p>
+          </div>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Designation
+            </p>
+            <p className="mt-1 text-sm font-medium text-foreground">{user.designation}</p>
           </div>
         </div>
       </Card>
 
-      {/* Pending Approvals */}
+      {/* Stats */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-600">Other Pending Approvals</p>
-          <p className="mt-2 text-3xl font-bold text-gray-900">{pendingApprovals.otherApprovals}</p>
-        </div>
-        <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-600">Leave Requests Pending Approval</p>
-          <p className="mt-2 text-3xl font-bold text-gray-900">{pendingApprovals.leaveRequests}</p>
-        </div>
-        <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-600">Time Sheets Pending Approval</p>
-          <p className="mt-2 text-3xl font-bold text-gray-900">{pendingApprovals.timeSheets}</p>
-        </div>
+        <Card className="border border-border bg-card p-5 shadow-none">
+          <p className="text-sm text-muted-foreground">Pending Leave Requests</p>
+          <p className="mt-2 text-3xl font-semibold text-foreground">{stats.pendingLeave}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Awaiting approval</p>
+        </Card>
+        <Card className="border border-border bg-card p-5 shadow-none">
+          <p className="text-sm text-muted-foreground">Approved Leave</p>
+          <p className="mt-2 text-3xl font-semibold text-foreground">{stats.approvedLeave}</p>
+          <p className="mt-1 text-xs text-muted-foreground">This year</p>
+        </Card>
+        <Card className="border border-border bg-card p-5 shadow-none">
+          <p className="text-sm text-muted-foreground">Available Leave Days</p>
+          <p className="mt-2 text-3xl font-semibold text-foreground">{stats.totalLeaveBalance}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Across all leave types</p>
+        </Card>
       </div>
 
-      {/* You Can Now Section */}
-      <Card className="border-0 bg-gradient-to-r from-purple-50 to-blue-50 p-8">
-        <h3 className="mb-6 text-lg font-semibold text-gray-900">You can now:</h3>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {quickActions.map((action) => (
-            <Link
-              key={action.id}
-              href={action.href}
-              className="flex items-center gap-3 rounded-lg bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="text-blue-500">
-                {iconMap[action.icon] || <FileIcon size={24} />}
-              </div>
-              <span className="font-medium text-gray-700">{action.label}</span>
-            </Link>
-          ))}
-        </div>
-      </Card>
-
-      {/* Action Cards Grid */}
+      {/* Quick Access */}
       <div>
-        <h3 className="mb-4 text-lg font-semibold text-gray-900">Quick Access</h3>
+        <h2 className="mb-4 text-lg font-semibold text-foreground">Quick Access</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {actionCards.map((card) => (
+          {cards.map((card) => (
             <Link
               key={card.id}
               href={card.href}
-              className="group rounded-lg border bg-white p-6 hover:border-blue-300 hover:shadow-lg transition-all"
+              className="group rounded-lg border border-border bg-card p-5 transition-all hover:border-blue-300 hover:shadow-sm dark:hover:border-blue-700"
             >
               <div className="flex items-start justify-between">
-                <div>
-                  <h4 className="font-semibold text-gray-900">{card.title}</h4>
-                  <p className="mt-2 text-2xl font-bold text-blue-600">{card.count}</p>
+                <div className="rounded-md bg-blue-50 p-2 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400">
+                  {iconMap[card.icon] ?? <FileIcon className="h-5 w-5" />}
                 </div>
-                <div className="text-gray-400 group-hover:text-blue-500 transition-colors">
-                  {iconMap[card.icon] || <FileIcon size={24} />}
-                </div>
+                {card.count > 0 && (
+                  <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 dark:bg-amber-950/50 dark:text-amber-300 dark:hover:bg-amber-950/50">
+                    {card.count} pending
+                  </Badge>
+                )}
               </div>
-              <div className="mt-4 flex items-center text-sm text-blue-600 group-hover:gap-2 transition-all">
-                <span>View Details</span>
-                <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="mt-4 flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-foreground">{card.title}</h3>
+                <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400" />
               </div>
             </Link>
           ))}
         </div>
       </div>
 
-      {/* Leave Balance Section */}
+      {/* Leave Balance */}
       <div>
-        <h3 className="mb-4 text-lg font-semibold text-gray-900">Leave Balance</h3>
-        <Card className="border-0 overflow-hidden">
+        <h2 className="mb-4 text-lg font-semibold text-foreground">Leave Balance</h2>
+        <Card className="overflow-hidden border border-border bg-card shadow-none">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b bg-gray-50">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Category</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Entitled</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Balance</th>
+                <tr className="border-b border-border bg-muted/50">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Category
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Entitled
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Balance
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {mockLeaveBalances.map((leave, index) => (
-                  <tr key={index} className="border-b hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm text-gray-700">{leave.type}</td>
-                    <td className="px-6 py-4 text-center text-sm font-medium text-gray-900">{leave.entitled}</td>
+                  <tr
+                    key={index}
+                    className="border-b border-border transition-colors last:border-0 hover:bg-muted/50"
+                  >
+                    <td className="px-6 py-4 text-sm text-foreground">{leave.type}</td>
+                    <td className="px-6 py-4 text-center text-sm text-muted-foreground">
+                      {leave.entitled}
+                    </td>
                     <td className="px-6 py-4 text-center">
-                      <Badge variant="secondary">{leave.balance}</Badge>
+                      <Badge
+                        variant="secondary"
+                        className="bg-muted text-foreground hover:bg-muted"
+                      >
+                        {leave.balance}
+                      </Badge>
                     </td>
                   </tr>
                 ))}

@@ -47,7 +47,7 @@ export function Sidebar({ role = 'employee' }: SidebarProps) {
       {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed left-4 top-4 z-50 rounded-lg bg-white p-2 md:hidden"
+        className="fixed left-4 top-4 z-50 rounded-lg border border-border bg-card p-2 text-foreground md:hidden"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
@@ -63,15 +63,17 @@ export function Sidebar({ role = 'employee' }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 h-full w-64 border-r bg-white transition-transform duration-300 ease-in-out md:relative md:translate-x-0',
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+          'fixed left-0 top-0 z-40 h-full w-64 border-r border-border bg-sidebar transition-transform duration-300 ease-in-out md:relative md:z-auto md:translate-x-0',
+          isOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="flex flex-col">
+        <div className="flex h-full flex-col">
           {/* Logo */}
-          <div className="border-b px-6 py-6">
+          <div className="border-b border-border px-6 py-6">
             <h1 className="text-2xl font-bold text-primary">IDRC</h1>
-            <p className="mt-2 text-xs text-gray-500">{role === 'admin' ? 'Admin' : 'Employee'} Portal</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {role === 'admin' ? 'Admin' : 'Employee'} Portal
+            </p>
           </div>
 
           {/* Navigation */}
@@ -87,8 +89,8 @@ export function Sidebar({ role = 'employee' }: SidebarProps) {
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors',
                     isActive
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300'
+                      : 'text-foreground/80 hover:bg-muted hover:text-foreground',
                   )}
                 >
                   <Icon size={20} />
@@ -99,10 +101,8 @@ export function Sidebar({ role = 'employee' }: SidebarProps) {
           </nav>
 
           {/* Footer */}
-          <div className="border-t px-4 py-4">
-            <p className="text-xs text-gray-500">
-              {currentUser.employeeId}
-            </p>
+          <div className="border-t border-border px-4 py-4">
+            <p className="text-xs text-muted-foreground">{currentUser.employeeId}</p>
           </div>
         </div>
       </aside>

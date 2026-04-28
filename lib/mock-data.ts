@@ -56,7 +56,7 @@ export const mockPayslips: Payslip[] = [
     ],
     netSalary: 88000,
     bankDetails: {
-      accountName: 'Gloria Nabirye',
+      accountName: '',
       accountNumber: '****5678',
       bankName: 'First National Bank',
       routingNumber: '123456789',
@@ -86,7 +86,7 @@ export const mockPayslips: Payslip[] = [
     ],
     netSalary: 88000,
     bankDetails: {
-      accountName: 'Gloria Nabirye',
+      accountName: '',
       accountNumber: '****5678',
       bankName: 'First National Bank',
       routingNumber: '123456789',
@@ -157,25 +157,11 @@ export const mockAssets: Asset[] = [
   },
 ];
 
-export const pendingApprovals = {
-  otherApprovals: 0,
-  leaveRequests: 0,
-  timeSheets: 0,
-};
-
-export const quickActions = [
-  { id: '1', label: 'Apply for Leave', icon: 'Calendar', href: '/dashboard/employee/leave' },
-  { id: '2', label: 'View Leave Calendar', icon: 'CalendarDays', href: '/dashboard/employee/calendar' },
-  { id: '3', label: 'Submit Time Sheets', icon: 'Clock', href: '/dashboard/employee/timesheets' },
-  { id: '4', label: 'Payment Requests', icon: 'CreditCard', href: '/dashboard/employee/payment-requests' },
-  { id: '5', label: 'View Policies', icon: 'FileText', href: '/dashboard/employee/policies' },
-];
-
 export const actionCards = [
-  { id: '1', title: 'Leave Requests', count: 5, icon: 'FileText', href: '/dashboard/employee/leave-requests' },
+  { id: '1', title: 'Leave Requests', count: 5, icon: 'FileText', href: '/dashboard/employee/leave' },
   { id: '2', title: 'Performance Appraisals', count: 1, icon: 'Star', href: '/dashboard/employee/appraisals' },
   { id: '3', title: 'Store Requests', count: 1, icon: 'ShoppingCart', href: '/dashboard/employee/store-requests' },
   { id: '4', title: 'Purchase Requisitions', count: 0, icon: 'ShoppingBag', href: '/dashboard/employee/purchase' },
-  { id: '5', title: 'Payment Requisitions', count: 0, icon: 'CreditCard', href: '/dashboard/employee/payment-reqs' },
+  { id: '5', title: 'Payment Requisitions', count: 0, icon: 'CreditCard', href: '/dashboard/employee/payment-requests' },
   { id: '6', title: 'Travel Requests', count: 0, icon: 'Plane', href: '/dashboard/employee/travel' },
 ];

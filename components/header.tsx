@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
 import { getInitials } from '@/lib/utils';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export function Header() {
   const { user, logout, updateAvatar, removeAvatar } = useAuth();
@@ -44,14 +45,19 @@ export function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between border-b bg-white px-6 py-4 shadow-sm">
+    <header className="flex items-center justify-between border-b border-border bg-card px-6 py-4 shadow-sm">
       <div className="flex items-center gap-3">
         <h1 className="text-xl font-bold text-primary">IDRC</h1>
       </div>
 
-      <div className="flex items-center gap-4">
-        <button className="relative rounded-full p-2 hover:bg-gray-100">
-          <Bell size={20} className="text-gray-600" />
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+
+        <button
+          aria-label="Notifications"
+          className="relative rounded-full p-2 hover:bg-muted text-foreground/80 hover:text-foreground transition-colors"
+        >
+          <Bell size={20} />
           <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500"></span>
         </button>
 
@@ -65,16 +71,16 @@ export function Header() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-3 rounded-lg p-2 hover:bg-gray-100">
-              <Avatar className="h-10 w-10 bg-blue-200">
+            <button className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted transition-colors">
+              <Avatar className="h-10 w-10">
                 {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} />}
-                <AvatarFallback className="bg-blue-200 text-blue-800 font-semibold">
+                <AvatarFallback className="bg-blue-100 text-blue-700 font-semibold dark:bg-blue-950 dark:text-blue-300">
                   {getInitials(user.name)}
                 </AvatarFallback>
               </Avatar>
               <div className="hidden text-left sm:block">
-                <p className="text-sm font-medium">{user.name}</p>
-                <p className="text-xs text-gray-500">
+                <p className="text-sm font-medium text-foreground">{user.name}</p>
+                <p className="text-xs text-muted-foreground">
                   {user.role === 'admin' ? 'HR Admin' : user.designation}
                 </p>
               </div>
