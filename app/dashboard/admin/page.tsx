@@ -3,7 +3,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, FileText, AlertCircle, TrendingUp } from 'lucide-react';
+import { Users, FileText, AlertCircle, TrendingUp, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
 const stats = [
@@ -11,28 +11,24 @@ const stats = [
     title: 'Total Employees',
     value: '156',
     icon: Users,
-    color: 'blue',
     href: '/dashboard/admin/employees',
   },
   {
     title: 'Pending Payslips',
     value: '12',
     icon: FileText,
-    color: 'yellow',
     href: '/dashboard/admin/payslips',
   },
   {
     title: 'Pending Approvals',
     value: '8',
     icon: AlertCircle,
-    color: 'red',
     href: '/dashboard/admin/approvals',
   },
   {
     title: 'This Month Revenue',
     value: '$45.2K',
     icon: TrendingUp,
-    color: 'green',
     href: '/dashboard/admin/reports',
   },
 ];
@@ -72,31 +68,24 @@ const recentActivities = [
   },
 ];
 
-const colorClasses: Record<string, string> = {
-  blue: 'from-blue-50 to-blue-100 text-blue-900',
-  yellow: 'from-yellow-50 to-yellow-100 text-yellow-900',
-  red: 'from-red-50 to-red-100 text-red-900',
-  green: 'from-green-50 to-green-100 text-green-900',
-};
-
 const getStatusBadgeColor = (status: string) => {
   switch (status) {
     case 'pending':
-      return 'bg-yellow-100 text-yellow-800';
+      return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100 dark:bg-yellow-950/50 dark:text-yellow-300 dark:hover:bg-yellow-950/50';
     case 'completed':
-      return 'bg-green-100 text-green-800';
+      return 'bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-950/50 dark:text-green-300 dark:hover:bg-green-950/50';
     default:
-      return 'bg-gray-100 text-gray-800';
+      return 'bg-muted text-foreground hover:bg-muted';
   }
 };
 
 export default function AdminDashboard() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="mt-2 text-gray-600">
+        <h1 className="text-3xl font-semibold text-foreground">Admin Dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Manage employees, payslips, and company-wide HR operations.
         </p>
       </div>
@@ -107,14 +96,15 @@ export default function AdminDashboard() {
           const Icon = stat.icon;
           return (
             <Link key={stat.title} href={stat.href}>
-              <Card className={`border-0 bg-gradient-to-br ${colorClasses[stat.color]} p-6 cursor-pointer hover:shadow-lg transition-shadow`}>
+              <Card className="group h-full cursor-pointer border border-border bg-card p-5 shadow-none transition-all hover:border-blue-300 hover:shadow-sm dark:hover:border-blue-700">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm font-medium opacity-75">{stat.title}</p>
-                    <p className="mt-2 text-3xl font-bold">{stat.value}</p>
+                  <div className="rounded-md bg-blue-50 p-2 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400">
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <Icon size={32} className="opacity-50" />
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400" />
                 </div>
+                <p className="mt-4 text-sm text-muted-foreground">{stat.title}</p>
+                <p className="mt-1 text-3xl font-semibold text-foreground">{stat.value}</p>
               </Card>
             </Link>
           );
@@ -122,8 +112,8 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <Card className="border-0 p-6">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900">Quick Actions</h3>
+      <Card className="border border-border bg-card p-6 shadow-none">
+        <h3 className="mb-4 text-base font-semibold text-foreground">Quick Actions</h3>
         <div className="flex flex-wrap gap-3">
           <Link href="/dashboard/admin/employees">
             <Button>Add Employee</Button>
@@ -141,32 +131,47 @@ export default function AdminDashboard() {
       </Card>
 
       {/* Recent Activities */}
-      <Card className="border-0 overflow-hidden">
-        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 px-8 py-6">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Activities</h3>
+      <Card className="overflow-hidden border border-border bg-card shadow-none">
+        <div className="border-b border-border px-8 py-5">
+          <h3 className="text-base font-semibold text-foreground">Recent Activities</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b bg-gray-50">
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Type</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Employee</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Action</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Date</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Type
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Employee
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Action
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Date
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Status
+                </th>
               </tr>
             </thead>
             <tbody>
               {recentActivities.map((activity) => (
-                <tr key={activity.id} className="border-b hover:bg-gray-50 transition-colors">
+                <tr
+                  key={activity.id}
+                  className="border-b border-border transition-colors last:border-0 hover:bg-muted/50"
+                >
                   <td className="px-6 py-4">
-                    <Badge variant="secondary">{activity.type}</Badge>
+                    <Badge variant="secondary" className="bg-muted text-foreground hover:bg-muted">
+                      {activity.type}
+                    </Badge>
                   </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                  <td className="px-6 py-4 text-sm font-medium text-foreground">
                     {activity.employee}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{activity.action}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{activity.date}</td>
+                  <td className="px-6 py-4 text-sm text-muted-foreground">{activity.action}</td>
+                  <td className="px-6 py-4 text-sm text-muted-foreground">{activity.date}</td>
                   <td className="px-6 py-4">
                     <Badge className={getStatusBadgeColor(activity.status)}>
                       {activity.status.charAt(0).toUpperCase() + activity.status.slice(1)}

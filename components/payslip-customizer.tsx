@@ -80,7 +80,7 @@ export function PayslipCustomizer({
       <Card className="p-6">
         <div className="space-y-6">
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Show/Hide Sections</h3>
+            <h3 className="font-semibold text-foreground mb-4">Show/Hide Sections</h3>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <Checkbox
@@ -88,7 +88,7 @@ export function PayslipCustomizer({
                   checked={customization.showGrossSalary}
                   onCheckedChange={() => onToggleSection('showGrossSalary')}
                 />
-                <Label htmlFor="gross-salary" className="cursor-pointer font-medium text-gray-700">
+                <Label htmlFor="gross-salary" className="cursor-pointer font-medium text-foreground/90">
                   Gross Salary & Breakdown
                 </Label>
               </div>
@@ -98,7 +98,7 @@ export function PayslipCustomizer({
                   checked={customization.showAllowances}
                   onCheckedChange={() => onToggleSection('showAllowances')}
                 />
-                <Label htmlFor="allowances" className="cursor-pointer font-medium text-gray-700">
+                <Label htmlFor="allowances" className="cursor-pointer font-medium text-foreground/90">
                   Allowances
                 </Label>
               </div>
@@ -108,7 +108,7 @@ export function PayslipCustomizer({
                   checked={customization.showDeductions}
                   onCheckedChange={() => onToggleSection('showDeductions')}
                 />
-                <Label htmlFor="deductions" className="cursor-pointer font-medium text-gray-700">
+                <Label htmlFor="deductions" className="cursor-pointer font-medium text-foreground/90">
                   Deductions
                 </Label>
               </div>
@@ -118,7 +118,7 @@ export function PayslipCustomizer({
                   checked={customization.showTaxes}
                   onCheckedChange={() => onToggleSection('showTaxes')}
                 />
-                <Label htmlFor="taxes" className="cursor-pointer font-medium text-gray-700">
+                <Label htmlFor="taxes" className="cursor-pointer font-medium text-foreground/90">
                   Taxes & Statutory Deductions
                 </Label>
               </div>
@@ -128,7 +128,7 @@ export function PayslipCustomizer({
                   checked={customization.showBankDetails}
                   onCheckedChange={() => onToggleSection('showBankDetails')}
                 />
-                <Label htmlFor="bank-details" className="cursor-pointer font-medium text-gray-700">
+                <Label htmlFor="bank-details" className="cursor-pointer font-medium text-foreground/90">
                   Bank Details
                 </Label>
               </div>
@@ -138,15 +138,15 @@ export function PayslipCustomizer({
                   checked={customization.showDepartmentInfo}
                   onCheckedChange={() => onToggleSection('showDepartmentInfo')}
                 />
-                <Label htmlFor="department" className="cursor-pointer font-medium text-gray-700">
+                <Label htmlFor="department" className="cursor-pointer font-medium text-foreground/90">
                   Department & Designation
                 </Label>
               </div>
             </div>
           </div>
 
-          <div className="border-t pt-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Template Color</h3>
+          <div className="border-t border-border pt-6">
+            <h3 className="font-semibold text-foreground mb-4">Template Color</h3>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {colorOptions.map((option) => (
                 <button
@@ -154,16 +154,16 @@ export function PayslipCustomizer({
                   onClick={() => onSetColor(option.value)}
                   className={`rounded-lg px-4 py-2 font-medium transition-all ${
                     customization.templateColor === option.value
-                      ? `ring-2 ring-offset-2 ring-blue-500 ${
-                        option.value === 'blue'
-                          ? 'bg-blue-100 text-blue-800'
-                          : option.value === 'green'
-                          ? 'bg-green-100 text-green-800'
-                          : option.value === 'purple'
-                          ? 'bg-purple-100 text-purple-800'
-                          : 'bg-slate-100 text-slate-800'
-                      }`
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? `ring-2 ring-offset-2 ring-blue-500 ring-offset-background ${
+                          option.value === 'blue'
+                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200'
+                            : option.value === 'green'
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200'
+                              : option.value === 'purple'
+                                ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200'
+                                : 'bg-slate-100 text-slate-800 dark:bg-slate-800/60 dark:text-slate-200'
+                        }`
+                      : 'bg-muted text-foreground hover:bg-muted/70'
                   }`}
                 >
                   {option.label}
@@ -172,7 +172,7 @@ export function PayslipCustomizer({
             </div>
           </div>
 
-          <div className="border-t pt-6">
+          <div className="border-t border-border pt-6">
             <Button
               onClick={onReset}
               variant="outline"

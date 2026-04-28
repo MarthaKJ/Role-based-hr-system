@@ -71,35 +71,35 @@ export default function LoginPage() {
   if (user) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         {/* Logo/Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-xl mb-4">
             <span className="text-2xl font-bold text-white">ID</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">IDRC</h1>
-          <p className="text-gray-600 mt-2">HR Management System</p>
+          <h1 className="text-3xl font-bold text-foreground">IDRC</h1>
+          <p className="text-muted-foreground mt-2">HR Management System</p>
         </div>
 
         {/* Login Form */}
-        <Card className="p-6 shadow-lg">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Sign In</h2>
+        <Card className="p-6 shadow-sm border border-border bg-card">
+          <h2 className="text-xl font-semibold text-foreground mb-6">Sign In</h2>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 dark:bg-red-950/30 dark:border-red-900">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5 dark:text-red-400" />
+              <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
@@ -113,11 +113,11 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="password"
                   type="password"
@@ -132,7 +132,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -147,11 +147,11 @@ export default function LoginPage() {
           </form>
 
           {/* Demo Users Section */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
+          <div className="mt-6 pt-6 border-t border-border">
             <button
               type="button"
               onClick={() => setShowDemoUsers(!showDemoUsers)}
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium mb-3 block"
+              className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium mb-3 block"
             >
               {showDemoUsers ? 'Hide' : 'Show'} Demo Accounts
             </button>
@@ -164,11 +164,11 @@ export default function LoginPage() {
                     type="button"
                     onClick={() => handleDemoLogin(user.email, user.role)}
                     disabled={isLoading}
-                    className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full text-left p-3 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <div className="font-medium text-gray-900 text-sm">{user.name}</div>
-                    <div className="text-xs text-gray-500">{user.email}</div>
-                    <div className="text-xs font-medium text-blue-600 mt-1">
+                    <div className="font-medium text-foreground text-sm">{user.name}</div>
+                    <div className="text-xs text-muted-foreground">{user.email}</div>
+                    <div className="text-xs font-medium text-blue-600 dark:text-blue-400 mt-1">
                       {user.role === 'admin' ? 'HR Admin' : 'Employee'}
                     </div>
                   </button>
@@ -179,7 +179,7 @@ export default function LoginPage() {
         </Card>
 
         {/* Footer */}
-        <p className="text-center text-sm text-gray-600 mt-6">
+        <p className="text-center text-sm text-muted-foreground mt-6">
           For demo purposes, any password works with the demo accounts.
         </p>
       </div>
