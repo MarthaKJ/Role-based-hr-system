@@ -1,6 +1,6 @@
 'use client';
 
-import { mockPayslips } from '@/lib/mock-data';
+import { usePayslips } from '@/context/payslips-context';
 import { usePayslipCustomization } from '@/hooks/use-payslip-customization';
 import { PayslipViewer } from '@/components/payslip-viewer';
 import { PayslipCustomizer } from '@/components/payslip-customizer';
@@ -13,7 +13,8 @@ export default function PayslipDetailPage() {
   const params = useParams();
   const payslipId = params.id as string;
 
-  const payslip = mockPayslips.find((p) => p.id === payslipId);
+  const { payslips } = usePayslips();
+  const payslip = payslips.find((p) => p.id === payslipId);
   const { customization, toggleSection, setTemplateColor, resetCustomization } =
     usePayslipCustomization();
 

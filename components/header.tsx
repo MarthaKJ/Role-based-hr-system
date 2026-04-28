@@ -10,12 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell, LogOut, Settings, Upload, Trash2 } from 'lucide-react';
+import { LogOut, Settings, Upload, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
 import { getInitials } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { Notifications } from '@/components/notifications';
 
 export function Header() {
   const { user, logout, updateAvatar, removeAvatar } = useAuth();
@@ -52,14 +53,7 @@ export function Header() {
 
       <div className="flex items-center gap-2">
         <ThemeToggle />
-
-        <button
-          aria-label="Notifications"
-          className="relative rounded-full p-2 hover:bg-muted text-foreground/80 hover:text-foreground transition-colors"
-        >
-          <Bell size={20} />
-          <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500"></span>
-        </button>
+        <Notifications />
 
         <input
           ref={fileInputRef}

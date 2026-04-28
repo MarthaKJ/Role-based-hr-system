@@ -21,11 +21,11 @@ export default function LoginPage() {
     router.push(user.role === 'admin' ? '/dashboard/admin' : '/dashboard/employee');
   }, [user, router]);
 
-  // Demo users for easy login
+  // Demo users for easy login (must match mockEmployees in lib/mock-data.ts)
   const demoUsers = [
-    { email: 'gloria.nabirye@idrc.org', name: 'Gloria Nabirye', role: 'employee' },
-    { email: 'james.smith@idrc.org', name: 'James Smith', role: 'employee' },
-    { email: 'hr.admin@idrc.org', name: 'HR Admin', role: 'admin' },
+    { email: 'martha.kisakye@company.com', name: 'Martha Kisakye', role: 'employee' },
+    { email: 'john.doe@company.com', name: 'John Doe', role: 'employee' },
+    { email: 'jane.smith@company.com', name: 'Jane Smith', role: 'admin' },
   ];
 
   const handleLogin = async (e: React.FormEvent) => {

@@ -2,6 +2,11 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { AuthProvider } from '@/context/auth-context'
+import { EmployeesProvider } from '@/context/employees-context'
+import { RequestsProvider } from '@/context/requests-context'
+import { PayslipsProvider } from '@/context/payslips-context'
+import { StoreProvider } from '@/context/store-context'
+import { AppraisalsProvider } from '@/context/appraisals-context'
 import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
@@ -45,7 +50,17 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>{children}</AuthProvider>
+          <EmployeesProvider>
+            <AuthProvider>
+              <RequestsProvider>
+                <PayslipsProvider>
+                  <StoreProvider>
+                    <AppraisalsProvider>{children}</AppraisalsProvider>
+                  </StoreProvider>
+                </PayslipsProvider>
+              </RequestsProvider>
+            </AuthProvider>
+          </EmployeesProvider>
         </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

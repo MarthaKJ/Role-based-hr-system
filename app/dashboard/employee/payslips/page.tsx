@@ -1,15 +1,19 @@
 'use client';
 
-import { mockPayslips } from '@/lib/mock-data';
+import { usePayslips } from '@/context/payslips-context';
+import { useAuth } from '@/context/auth-context';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, Eye, Mail } from 'lucide-react';
 import Link from 'next/link';
 
 export default function PayslipsPage() {
-  const sortedPayslips = [...mockPayslips].sort(
-    (a, b) => new Date(b.generatedDate).getTime() - new Date(a.generatedDate).getTime(),
-  );
+  const { user } = useAuth();
+  const { payslips } = usePayslips();
+
+  const sortedPayslips = payslips
+    .filter((p) => p.employeeId === (user?.id ?? '1'))
+    .sort((a, b) => new Date(b.generatedDate).getTime() - new Date(a.generatedDate).getTime());
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('en-US', {

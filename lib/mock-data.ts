@@ -27,8 +27,26 @@ export const mockEmployees: User[] = [
     email: 'jane.smith@company.com',
     designation: 'HR Manager',
     department: 'Human Resources',
-    role: 'hr',
+    role: 'admin',
     employeeId: 'EMP003',
+  },
+  {
+    id: '4',
+    name: 'Sarah Williams',
+    email: 'sarah.williams@company.com',
+    designation: 'UX Designer',
+    department: 'Design',
+    role: 'employee',
+    employeeId: 'EMP004',
+  },
+  {
+    id: '5',
+    name: 'Mike Johnson',
+    email: 'mike.johnson@company.com',
+    designation: 'Backend Engineer',
+    department: 'Engineering',
+    role: 'employee',
+    employeeId: 'EMP005',
   },
 ];
 

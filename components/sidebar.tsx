@@ -7,25 +7,35 @@ import {
   BarChart3,
   FileText,
   Calendar,
+  CalendarDays,
   CreditCard,
   Users,
   Settings,
   Menu,
   X,
   Home,
+  ClipboardCheck,
+  Star,
+  Package,
 } from 'lucide-react';
 import { useState } from 'react';
-import { currentUser } from '@/lib/mock-data';
+import { useAuth } from '@/context/auth-context';
 
 const employeeNavItems = [
   { label: 'Dashboard', href: '/dashboard/employee', icon: Home },
   { label: 'Payslips', href: '/dashboard/employee/payslips', icon: FileText },
   { label: 'Leave', href: '/dashboard/employee/leave', icon: Calendar },
+  { label: 'Leave Calendar', href: '/dashboard/employee/leave-calendar', icon: CalendarDays },
   { label: 'Payment Requests', href: '/dashboard/employee/payment-requests', icon: CreditCard },
+  { label: 'Store Requests', href: '/dashboard/employee/store-requests', icon: Package },
+  { label: 'Appraisals', href: '/dashboard/employee/appraisals', icon: Star },
 ];
 
 const adminNavItems = [
   { label: 'Dashboard', href: '/dashboard/admin', icon: Home },
+  { label: 'Approvals', href: '/dashboard/admin/approvals', icon: ClipboardCheck },
+  { label: 'Leave Calendar', href: '/dashboard/admin/leave-calendar', icon: CalendarDays },
+  { label: 'Appraisals', href: '/dashboard/admin/appraisals', icon: Star },
   { label: 'Employees', href: '/dashboard/admin/employees', icon: Users },
   { label: 'Payslips', href: '/dashboard/admin/payslips', icon: FileText },
   { label: 'Reports', href: '/dashboard/admin/reports', icon: BarChart3 },
@@ -39,6 +49,7 @@ interface SidebarProps {
 export function Sidebar({ role = 'employee' }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const navItems = role === 'admin' ? adminNavItems : employeeNavItems;
 
@@ -102,7 +113,7 @@ export function Sidebar({ role = 'employee' }: SidebarProps) {
 
           {/* Footer */}
           <div className="border-t border-border px-4 py-4">
-            <p className="text-xs text-muted-foreground">{currentUser.employeeId}</p>
+            <p className="text-xs text-muted-foreground">{user?.employeeId ?? ''}</p>
           </div>
         </div>
       </aside>

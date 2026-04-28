@@ -1,9 +1,12 @@
 'use client';
 
 import { useMemo } from 'react';
-import { actionCards, mockLeaveBalances, mockLeaveRequests } from '@/lib/mock-data';
+import { actionCards, mockLeaveBalances } from '@/lib/mock-data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/context/auth-context';
+import { useRequests } from '@/context/requests-context';
+import { useStore } from '@/context/store-context';
+import { useAppraisals } from '@/context/appraisals-context';
 import { getInitials } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -30,20 +33,43 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export default function EmployeeDashboard() {
   const { user } = useAuth();
+  const { leaveRequests, paymentRequests } = useRequests();
+  const { requests: storeRequests } = useStore();
+  const { appraisals } = useAppraisals();
+
+  const employeeId = user?.id ?? '1';
 
   const stats = useMemo(() => {
-    const pendingLeave = mockLeaveRequests.filter((r) => r.status === 'pending').length;
-    const approvedLeave = mockLeaveRequests.filter((r) => r.status === 'approved').length;
+    const myLeave = leaveRequests.filter((r) => r.employeeId === employeeId);
+    const pendingLeave = myLeave.filter((r) => r.status === 'pending').length;
+    const approvedLeave = myLeave.filter((r) => r.status === 'approved').length;
     const totalLeaveBalance = mockLeaveBalances.reduce((sum, l) => sum + l.balance, 0);
     return { pendingLeave, approvedLeave, totalLeaveBalance };
-  }, []);
+  }, [leaveRequests, employeeId]);
+
+  const cardCounts = useMemo(() => {
+    return {
+      'Leave Requests': leaveRequests.filter(
+        (r) => r.employeeId === employeeId && r.status === 'pending',
+      ).length,
+      'Performance Appraisals': appraisals.filter(
+        (a) => a.employeeId === employeeId && a.status === 'published',
+      ).length,
+      'Store Requests': storeRequests.filter(
+        (r) => r.employeeId === employeeId && (r.status === 'pending' || r.status === 'approved'),
+      ).length,
+      'Payment Requisitions': paymentRequests.filter(
+        (r) => r.employeeId === employeeId && r.status === 'pending',
+      ).length,
+    } as Record<string, number>;
+  }, [leaveRequests, paymentRequests, storeRequests, appraisals, employeeId]);
 
   const cards = useMemo(
     () =>
       actionCards.map((card) =>
-        card.title === 'Leave Requests' ? { ...card, count: stats.pendingLeave } : card,
+        card.title in cardCounts ? { ...card, count: cardCounts[card.title] } : card,
       ),
-    [stats.pendingLeave],
+    [cardCounts],
   );
 
   if (!user) return null;
