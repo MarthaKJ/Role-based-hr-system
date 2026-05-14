@@ -7,6 +7,7 @@ import { RequestsProvider } from '@/context/requests-context'
 import { PayslipsProvider } from '@/context/payslips-context'
 import { StoreProvider } from '@/context/store-context'
 import { AppraisalsProvider } from '@/context/appraisals-context'
+import { AttendanceProvider } from '@/context/attendance-context'
 import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
@@ -55,7 +56,9 @@ export default function RootLayout({
               <RequestsProvider>
                 <PayslipsProvider>
                   <StoreProvider>
-                    <AppraisalsProvider>{children}</AppraisalsProvider>
+                    <AppraisalsProvider>
+                      <AttendanceProvider>{children}</AttendanceProvider>
+                    </AppraisalsProvider>
                   </StoreProvider>
                 </PayslipsProvider>
               </RequestsProvider>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { mockLeaveBalances } from '@/lib/mock-data';
 import { useRequests } from '@/context/requests-context';
 import { useAuth } from '@/context/auth-context';
@@ -10,11 +11,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ApplyLeaveDialog } from '@/components/apply-leave-dialog';
 import { Plus, CalendarDays } from 'lucide-react';
+import { dashboardBase } from '@/lib/utils';
 
 export default function LeavePage() {
   const { user } = useAuth();
   const { leaveRequests } = useRequests();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const base = dashboardBase(usePathname());
 
   const myRequests = leaveRequests.filter((r) => r.employeeId === (user?.id ?? '1'));
 
@@ -49,7 +52,7 @@ export default function LeavePage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/dashboard/employee/leave-calendar">
+          <Link href={`${base}/leave-calendar`}>
             <Button variant="outline" className="gap-2">
               <CalendarDays size={16} />
               Team Calendar

@@ -76,6 +76,7 @@ export function Header() {
                 <p className="text-sm font-medium text-foreground">{user.name}</p>
                 <p className="text-xs text-muted-foreground">
                   {user.role === 'admin' ? 'HR Admin' : user.designation}
+                  {user.role === 'manager' && ' · Manager'}
                 </p>
               </div>
             </button>

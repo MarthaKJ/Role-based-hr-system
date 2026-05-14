@@ -11,7 +11,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user } = useAuth();
-  const role = user?.role === 'admin' ? 'admin' : 'employee';
+  const role: 'admin' | 'manager' | 'employee' =
+    user?.role === 'admin' || user?.role === 'hr'
+      ? 'admin'
+      : user?.role === 'manager'
+        ? 'manager'
+        : 'employee';
 
   return (
     <ProtectedRoute>

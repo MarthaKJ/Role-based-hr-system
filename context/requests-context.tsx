@@ -41,12 +41,19 @@ type LeaveDraft = Omit<LeaveRequest, 'id' | 'status' | 'appliedOn'>;
 type PaymentDraft = Omit<PaymentRequest, 'id' | 'status' | 'date'>;
 type Decision = 'approved' | 'rejected';
 
+export interface LeaveDecision {
+  status: Decision;
+  comment?: string;
+  decidedBy?: string;
+}
+
 interface RequestsContextType {
   leaveRequests: LeaveRequest[];
   paymentRequests: PaymentRequest[];
   addLeaveRequest: (request: LeaveDraft) => void;
   addPaymentRequest: (request: PaymentDraft) => void;
   updateLeaveStatus: (id: string, status: Decision) => void;
+  decideLeaveRequest: (id: string, decision: LeaveDecision) => void;
   updatePaymentStatus: (id: string, status: Decision) => void;
 }
 
@@ -77,8 +84,29 @@ export function RequestsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateLeaveStatus = useCallback((id: string, status: Decision) => {
-    setLeaveRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
+    setLeaveRequests((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, status, decidedOn: new Date() } : r)),
+    );
   }, []);
+
+  const decideLeaveRequest = useCallback(
+    (id: string, { status, comment, decidedBy }: LeaveDecision) => {
+      setLeaveRequests((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? {
+                ...r,
+                status,
+                managerComment: comment?.trim() ? comment.trim() : r.managerComment,
+                decidedBy: decidedBy ?? r.decidedBy,
+                decidedOn: new Date(),
+              }
+            : r,
+        ),
+      );
+    },
+    [],
+  );
 
   const updatePaymentStatus = useCallback((id: string, status: Decision) => {
     setPaymentRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
@@ -92,6 +120,7 @@ export function RequestsProvider({ children }: { children: ReactNode }) {
         addLeaveRequest,
         addPaymentRequest,
         updateLeaveStatus,
+        decideLeaveRequest,
         updatePaymentStatus,
       }}
     >

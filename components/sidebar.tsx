@@ -17,6 +17,8 @@ import {
   ClipboardCheck,
   Star,
   Package,
+  UsersRound,
+  Clock,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/context/auth-context';
@@ -42,8 +44,20 @@ const adminNavItems = [
   { label: 'Settings', href: '/dashboard/admin/settings', icon: Settings },
 ];
 
+const managerNavItems = [
+  { label: 'Dashboard', href: '/dashboard/manager', icon: Home },
+  { label: 'My Team', href: '/dashboard/manager/team', icon: UsersRound },
+  { label: 'Leave Approvals', href: '/dashboard/manager/approvals', icon: ClipboardCheck },
+  { label: 'Attendance', href: '/dashboard/manager/attendance', icon: Clock },
+  { label: 'Appraisals', href: '/dashboard/manager/appraisals', icon: Star },
+  { label: 'My Leave', href: '/dashboard/manager/leave', icon: Calendar },
+  { label: 'Leave Calendar', href: '/dashboard/manager/leave-calendar', icon: CalendarDays },
+  { label: 'Payslips', href: '/dashboard/manager/payslips', icon: FileText },
+  { label: 'Payment Requests', href: '/dashboard/manager/payment-requests', icon: CreditCard },
+];
+
 interface SidebarProps {
-  role?: 'employee' | 'admin';
+  role?: 'employee' | 'admin' | 'manager';
 }
 
 export function Sidebar({ role = 'employee' }: SidebarProps) {
@@ -51,7 +65,9 @@ export function Sidebar({ role = 'employee' }: SidebarProps) {
   const pathname = usePathname();
   const { user } = useAuth();
 
-  const navItems = role === 'admin' ? adminNavItems : employeeNavItems;
+  const navItems =
+    role === 'admin' ? adminNavItems : role === 'manager' ? managerNavItems : employeeNavItems;
+  const portalLabel = role === 'admin' ? 'Admin' : role === 'manager' ? 'Manager' : 'Employee';
 
   return (
     <>
@@ -82,9 +98,7 @@ export function Sidebar({ role = 'employee' }: SidebarProps) {
           {/* Logo */}
           <div className="border-b border-border px-6 py-6">
             <h1 className="text-2xl font-bold text-primary">IDRC</h1>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {role === 'admin' ? 'Admin' : 'Employee'} Portal
-            </p>
+            <p className="mt-2 text-xs text-muted-foreground">{portalLabel} Portal</p>
           </div>
 
           {/* Navigation */}

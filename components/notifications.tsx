@@ -6,6 +6,7 @@ import { Bell, Calendar, CreditCard, Inbox, Package, Star } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/context/auth-context';
+import { useEmployees } from '@/context/employees-context';
 import { useRequests } from '@/context/requests-context';
 import { useStore } from '@/context/store-context';
 import { useAppraisals } from '@/context/appraisals-context';
@@ -36,6 +37,7 @@ const statusDot = (status: string) => {
 
 export function Notifications() {
   const { user } = useAuth();
+  const { employees } = useEmployees();
   const { leaveRequests, paymentRequests } = useRequests();
   const { catalog, requests: storeRequests } = useStore();
   const { appraisals } = useAppraisals();
@@ -44,6 +46,59 @@ export function Notifications() {
 
   const items = useMemo(() => {
     if (!user) return [];
+
+    if (user.role === 'manager') {
+      const teamIds = new Set(
+        employees.filter((e) => e.managerId === user.id).map((e) => e.id),
+      );
+      const teamPendingLeave = leaveRequests
+        .filter((r) => teamIds.has(r.employeeId) && r.status === 'pending')
+        .map((r) => ({
+          key: `L-${r.id}`,
+          icon: Calendar,
+          title: 'Leave request pending',
+          subtitle: `${r.days} ${r.days === 1 ? 'day' : 'days'} of ${r.type} leave`,
+          date: r.appliedOn,
+          status: 'pending' as const,
+          href: '/dashboard/manager/approvals',
+        }));
+      const teamDraftAppraisals = appraisals
+        .filter((a) => teamIds.has(a.employeeId) && a.status === 'draft')
+        .map((a) => ({
+          key: `A-${a.id}`,
+          icon: Star,
+          title: 'Appraisal in draft',
+          subtitle: `${a.period}`,
+          date: a.createdAt,
+          status: 'pending' as const,
+          href: '/dashboard/manager/appraisals',
+        }));
+      const myLeave = leaveRequests
+        .filter((r) => r.employeeId === user.id && r.status !== 'pending')
+        .map((r) => ({
+          key: `ML-${r.id}`,
+          icon: Calendar,
+          title: `Your leave ${r.status}`,
+          subtitle: `${r.days} ${r.days === 1 ? 'day' : 'days'} of ${r.type} leave`,
+          date: r.decidedOn ?? r.appliedOn,
+          status: r.status,
+          href: '/dashboard/manager/leave',
+        }));
+      const myPayments = paymentRequests
+        .filter((r) => r.employeeId === user.id && r.status !== 'pending')
+        .map((r) => ({
+          key: `MP-${r.id}`,
+          icon: CreditCard,
+          title: `Payment request ${r.status}`,
+          subtitle: `${r.title} — $${r.amount.toLocaleString()}`,
+          date: r.date,
+          status: r.status,
+          href: '/dashboard/manager/payment-requests',
+        }));
+      return [...teamPendingLeave, ...teamDraftAppraisals, ...myLeave, ...myPayments]
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 8);
+    }
 
     if (user.role === 'admin' || user.role === 'hr') {
       const pendingLeave = leaveRequests
@@ -131,10 +186,11 @@ export function Notifications() {
     return [...myLeave, ...myPayments, ...myStore, ...myAppraisals]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 8);
-  }, [user, leaveRequests, paymentRequests, storeRequests, appraisals, catalog]);
+  }, [user, employees, leaveRequests, paymentRequests, storeRequests, appraisals, catalog]);
 
   const unreadCount = items.length;
   const isAdmin = user?.role === 'admin' || user?.role === 'hr';
+  const isManager = user?.role === 'manager';
 
   return (
     <Popover>
@@ -170,7 +226,7 @@ export function Notifications() {
               <Inbox className="h-5 w-5" />
             </div>
             <p className="mt-3 text-sm text-muted-foreground">
-              {isAdmin ? 'No pending approvals.' : 'No recent activity.'}
+              {isAdmin || isManager ? 'No pending approvals.' : 'No recent activity.'}
             </p>
           </div>
         ) : (
@@ -203,10 +259,10 @@ export function Notifications() {
           </ul>
         )}
 
-        {isAdmin && unreadCount > 0 && (
+        {(isAdmin || isManager) && unreadCount > 0 && (
           <div className="border-t border-border px-4 py-2">
             <Link
-              href="/dashboard/admin/approvals"
+              href={isManager ? '/dashboard/manager/approvals' : '/dashboard/admin/approvals'}
               className="block text-center text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
               Review all approvals

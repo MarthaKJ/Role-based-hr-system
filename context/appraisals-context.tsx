@@ -12,6 +12,13 @@ const initialAppraisals: Appraisal[] = [
     managerFeedback:
       'Strong delivery on the payroll dashboard. Continue to take on cross-team initiatives. Mentoring newer engineers has been a real bright spot.',
     rating: 4,
+    teamworkRating: 5,
+    communicationRating: 4,
+    technicalRating: 4,
+    attendanceRating: 5,
+    strengths: 'Reliable, mentors others, strong ownership of the payroll module.',
+    weaknesses: 'Could delegate more during crunch weeks.',
+    recommendations: 'Lead the appraisal tooling track next quarter.',
     createdAt: new Date('2026-01-10'),
     publishedAt: new Date('2026-01-15'),
   },
@@ -27,16 +34,30 @@ const initialAppraisals: Appraisal[] = [
   },
 ];
 
-interface AppraisalDraft {
+export interface AppraisalDraft {
   employeeId: string;
   period: string;
   managerFeedback: string;
   rating: number;
+  teamworkRating?: number;
+  communicationRating?: number;
+  technicalRating?: number;
+  attendanceRating?: number;
+  strengths?: string;
+  weaknesses?: string;
+  recommendations?: string;
 }
 
-interface AppraisalUpdate {
+export interface AppraisalUpdate {
   managerFeedback?: string;
   rating?: number;
+  teamworkRating?: number;
+  communicationRating?: number;
+  technicalRating?: number;
+  attendanceRating?: number;
+  strengths?: string;
+  weaknesses?: string;
+  recommendations?: string;
 }
 
 interface AppraisalsContextType {
@@ -68,6 +89,13 @@ export function AppraisalsProvider({ children }: { children: ReactNode }) {
         status: 'draft',
         managerFeedback: draft.managerFeedback,
         rating: draft.rating,
+        teamworkRating: draft.teamworkRating,
+        communicationRating: draft.communicationRating,
+        technicalRating: draft.technicalRating,
+        attendanceRating: draft.attendanceRating,
+        strengths: draft.strengths,
+        weaknesses: draft.weaknesses,
+        recommendations: draft.recommendations,
         createdAt: new Date(),
         publishedAt: null,
       };

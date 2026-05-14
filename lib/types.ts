@@ -5,8 +5,9 @@ export interface User {
   designation: string;
   department: string;
   avatarUrl?: string;
-  role: 'employee' | 'admin' | 'hr';
+  role: 'employee' | 'admin' | 'hr' | 'manager';
   employeeId: string;
+  managerId?: string;
 }
 
 export interface Payslip {
@@ -48,6 +49,9 @@ export interface LeaveRequest {
   reason?: string;
   status: 'pending' | 'approved' | 'rejected';
   appliedOn: Date;
+  managerComment?: string;
+  decidedBy?: string;
+  decidedOn?: Date;
 }
 
 export interface PaymentRequest {
@@ -87,6 +91,13 @@ export interface Appraisal {
   rating: number;
   createdAt: Date;
   publishedAt: Date | null;
+  teamworkRating?: number;
+  communicationRating?: number;
+  technicalRating?: number;
+  attendanceRating?: number;
+  strengths?: string;
+  weaknesses?: string;
+  recommendations?: string;
 }
 
 export interface LeaveBalance {
@@ -129,4 +140,16 @@ export interface Asset {
   serialNumber: string;
   issuedDate: Date;
   status: 'active' | 'returned' | 'lost';
+}
+
+export type AttendanceStatus = 'present' | 'absent' | 'late' | 'leave';
+
+export interface AttendanceRecord {
+  id: string;
+  employeeId: string;
+  date: Date;
+  status: AttendanceStatus;
+  clockIn?: string;
+  clockOut?: string;
+  overtimeHours?: number;
 }

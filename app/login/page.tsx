@@ -16,15 +16,22 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [showDemoUsers, setShowDemoUsers] = useState(false);
 
+  const homeForRole = (role: string) => {
+    if (role === 'admin' || role === 'hr') return '/dashboard/admin';
+    if (role === 'manager') return '/dashboard/manager';
+    return '/dashboard/employee';
+  };
+
   useEffect(() => {
     if (!user) return;
-    router.push(user.role === 'admin' ? '/dashboard/admin' : '/dashboard/employee');
+    router.push(homeForRole(user.role));
   }, [user, router]);
 
   // Demo users for easy login (must match mockEmployees in lib/mock-data.ts)
   const demoUsers = [
     { email: 'martha.kisakye@company.com', name: 'Martha Kisakye', role: 'employee' },
     { email: 'john.doe@company.com', name: 'John Doe', role: 'employee' },
+    { email: 'david.lee@company.com', name: 'David Lee', role: 'manager' },
     { email: 'jane.smith@company.com', name: 'Jane Smith', role: 'admin' },
   ];
 
@@ -39,13 +46,8 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      // Redirect based on user role
       const foundUser = demoUsers.find((u) => u.email === email);
-      if (foundUser?.role === 'admin') {
-        router.push('/dashboard/admin');
-      } else {
-        router.push('/dashboard/employee');
-      }
+      router.push(homeForRole(foundUser?.role ?? 'employee'));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     }
@@ -58,11 +60,7 @@ export default function LoginPage() {
 
     try {
       await login(demoEmail, 'demo');
-      if (role === 'admin') {
-        router.push('/dashboard/admin');
-      } else {
-        router.push('/dashboard/employee');
-      }
+      router.push(homeForRole(role));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     }
@@ -169,7 +167,11 @@ export default function LoginPage() {
                     <div className="font-medium text-foreground text-sm">{user.name}</div>
                     <div className="text-xs text-muted-foreground">{user.email}</div>
                     <div className="text-xs font-medium text-blue-600 dark:text-blue-400 mt-1">
-                      {user.role === 'admin' ? 'HR Admin' : 'Employee'}
+                      {user.role === 'admin'
+                        ? 'HR Admin'
+                        : user.role === 'manager'
+                          ? 'Manager'
+                          : 'Employee'}
                     </div>
                   </button>
                 ))}

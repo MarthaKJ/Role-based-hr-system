@@ -14,3 +14,10 @@ export function getInitials(name: string) {
     .join('')
     .toUpperCase()
 }
+
+export function dashboardBase(pathname: string | null | undefined): string {
+  if (!pathname) return '/dashboard/employee';
+  if (pathname.startsWith('/dashboard/manager')) return '/dashboard/manager';
+  if (pathname.startsWith('/dashboard/admin')) return '/dashboard/admin';
+  return '/dashboard/employee';
+}
