@@ -2,19 +2,15 @@
 
 A role-based Human Resources management web application with dedicated portals for
 **Employees**, **Managers**, and **HR Administrators**. It covers the core HR
-workflows an organization relies on day to day — leave, payroll, requests,
-approvals, performance appraisals, and attendance — behind role-aware navigation
+workflows an organization relies on day to day leave, payroll, requests,
+approvals, performance appraisals, and attendance, behind role-aware navigation
 and access control.
-
-> **Note:** This is a front-end application. All data is served from in-memory
-> mock data via React Context (no backend or database yet), which makes it easy
-> to run and explore locally.
 
 ## Features
 
 ### Employee portal
 - **Dashboard** with leave balances, quick actions, and request summaries
-- **Leave** — apply for annual, sick, compassionate, or maternity leave with validation
+- **Leave** — Check for leave availability basing on your team members availability days on calender, apply for annual, sick, compassionate, or maternity leave with validation
 - **Payslips** — browse monthly payslips and view/print a detailed, customizable payslip
 - **Payment requests** — advance salary and reimbursement requests
 - **Store, purchase & travel requests**
