@@ -1,6 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import { useRequests } from '@/context/requests-context';
+import { useAuth } from '@/context/auth-context';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,15 +27,6 @@ import {
 } from '@/components/ui/select';
 import { Plus, FileText, AlertCircle } from 'lucide-react';
 
-type PaymentRequest = {
-  id: string;
-  title: string;
-  amount: number;
-  date: string;
-  status: 'pending' | 'approved' | 'rejected';
-  description: string;
-};
-
 type RequestType = 'advance-salary' | 'reimbursement';
 
 const REQUEST_TYPE_OPTIONS: { value: RequestType; label: string; defaultTitle: string }[] = [
@@ -41,35 +34,9 @@ const REQUEST_TYPE_OPTIONS: { value: RequestType; label: string; defaultTitle: s
   { value: 'reimbursement', label: 'Reimbursement', defaultTitle: 'Reimbursement Request' },
 ];
 
-const initialMockRequests: PaymentRequest[] = [
-  {
-    id: '1',
-    title: 'Advance Salary Request',
-    amount: 50000,
-    date: '2026-04-20',
-    status: 'pending',
-    description: 'Medical expenses',
-  },
-  {
-    id: '2',
-    title: 'Reimbursement - Office Supplies',
-    amount: 5000,
-    date: '2026-04-15',
-    status: 'approved',
-    description: 'Office equipment and supplies',
-  },
-  {
-    id: '3',
-    title: 'Travel Reimbursement',
-    amount: 15000,
-    date: '2026-04-10',
-    status: 'approved',
-    description: 'Project travel to branch office',
-  },
-];
-
 export default function PaymentRequestsPage() {
-  const [submittedRequests, setSubmittedRequests] = useState<PaymentRequest[]>([]);
+  const { user } = useAuth();
+  const { paymentRequests, addPaymentRequest } = useRequests();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [requestType, setRequestType] = useState<RequestType | ''>('');
   const [title, setTitle] = useState('');
@@ -77,10 +44,7 @@ export default function PaymentRequestsPage() {
   const [description, setDescription] = useState('');
   const [formError, setFormError] = useState('');
 
-  const allRequests = useMemo(
-    () => [...submittedRequests, ...initialMockRequests],
-    [submittedRequests],
-  );
+  const allRequests = paymentRequests.filter((r) => r.employeeId === (user?.id ?? '1'));
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -141,16 +105,14 @@ export default function PaymentRequestsPage() {
       return;
     }
 
-    const newRequest: PaymentRequest = {
-      id: `PR${Date.now()}`,
+    addPaymentRequest({
+      employeeId: user?.id ?? '1',
+      category: requestType,
       title: title.trim(),
       amount: amountNumber,
-      date: new Date().toISOString().slice(0, 10),
-      status: 'pending',
       description: description.trim(),
-    };
+    });
 
-    setSubmittedRequests((prev) => [newRequest, ...prev]);
     resetForm();
     setDialogOpen(false);
   };

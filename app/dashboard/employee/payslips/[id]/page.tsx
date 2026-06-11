@@ -1,26 +1,29 @@
 'use client';
 
-import { mockPayslips } from '@/lib/mock-data';
+import { usePayslips } from '@/context/payslips-context';
 import { usePayslipCustomization } from '@/hooks/use-payslip-customization';
 import { PayslipViewer } from '@/components/payslip-viewer';
 import { PayslipCustomizer } from '@/components/payslip-customizer';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
+import { dashboardBase } from '@/lib/utils';
 
 export default function PayslipDetailPage() {
   const params = useParams();
   const payslipId = params.id as string;
+  const base = dashboardBase(usePathname());
 
-  const payslip = mockPayslips.find((p) => p.id === payslipId);
+  const { payslips } = usePayslips();
+  const payslip = payslips.find((p) => p.id === payslipId);
   const { customization, toggleSection, setTemplateColor, resetCustomization } =
     usePayslipCustomization();
 
   if (!payslip) {
     return (
       <div className="space-y-6">
-        <Link href="/dashboard/employee/payslips">
+        <Link href={`${base}/payslips`}>
           <Button variant="outline" className="gap-2">
             <ArrowLeft size={16} />
             Back to Payslips
@@ -40,7 +43,7 @@ export default function PayslipDetailPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/dashboard/employee/payslips">
+        <Link href={`${base}/payslips`}>
           <Button variant="outline" className="gap-2">
             <ArrowLeft size={16} />
             Back to Payslips

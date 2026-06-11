@@ -1,15 +1,22 @@
 'use client';
 
-import { mockPayslips } from '@/lib/mock-data';
+import { usePayslips } from '@/context/payslips-context';
+import { useAuth } from '@/context/auth-context';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, Eye, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { dashboardBase } from '@/lib/utils';
 
 export default function PayslipsPage() {
-  const sortedPayslips = [...mockPayslips].sort(
-    (a, b) => new Date(b.generatedDate).getTime() - new Date(a.generatedDate).getTime(),
-  );
+  const { user } = useAuth();
+  const { payslips } = usePayslips();
+  const base = dashboardBase(usePathname());
+
+  const sortedPayslips = payslips
+    .filter((p) => p.employeeId === (user?.id ?? '1'))
+    .sort((a, b) => new Date(b.generatedDate).getTime() - new Date(a.generatedDate).getTime());
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -67,7 +74,7 @@ export default function PayslipsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-1">
-                      <Link href={`/dashboard/employee/payslips/${payslip.id}`}>
+                      <Link href={`${base}/payslips/${payslip.id}`}>
                         <Button variant="ghost" size="sm" className="gap-2">
                           <Eye size={16} />
                           <span className="hidden sm:inline">View</span>

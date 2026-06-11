@@ -1,8 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useRef, ReactNode } from 'react';
 import { User } from '@/lib/types';
-import { mockEmployees } from '@/lib/mock-data';
+import { useEmployees } from '@/context/employees-context';
 
 interface AuthContextType {
   user: User | null;
@@ -16,26 +16,26 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { employees } = useEmployees();
+  const employeesRef = useRef(employees);
+  employeesRef.current = employees;
+
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string, _password: string) => {
     setIsLoading(true);
     try {
-      // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      // Mock authentication - find user by email
-      const foundUser = mockEmployees.find(
-        (emp) => emp.email.toLowerCase() === email.toLowerCase()
+      const foundUser = employeesRef.current.find(
+        (emp) => emp.email.toLowerCase() === email.toLowerCase(),
       );
 
       if (!foundUser) {
         throw new Error('User not found');
       }
 
-      // In a real app, you'd validate password against backend
-      // For now, any password works for demo purposes
       setUser(foundUser);
     } catch (error) {
       throw error;

@@ -7,40 +7,67 @@ import {
   BarChart3,
   FileText,
   Calendar,
+  CalendarDays,
   CreditCard,
   Users,
   Settings,
   Menu,
   X,
   Home,
+  ClipboardCheck,
+  Star,
+  Package,
+  UsersRound,
+  Clock,
 } from 'lucide-react';
 import { useState } from 'react';
-import { currentUser } from '@/lib/mock-data';
+import { useAuth } from '@/context/auth-context';
 
 const employeeNavItems = [
   { label: 'Dashboard', href: '/dashboard/employee', icon: Home },
   { label: 'Payslips', href: '/dashboard/employee/payslips', icon: FileText },
   { label: 'Leave', href: '/dashboard/employee/leave', icon: Calendar },
+  { label: 'Leave Calendar', href: '/dashboard/employee/leave-calendar', icon: CalendarDays },
   { label: 'Payment Requests', href: '/dashboard/employee/payment-requests', icon: CreditCard },
+  { label: 'Store Requests', href: '/dashboard/employee/store-requests', icon: Package },
+  { label: 'Appraisals', href: '/dashboard/employee/appraisals', icon: Star },
 ];
 
 const adminNavItems = [
   { label: 'Dashboard', href: '/dashboard/admin', icon: Home },
+  { label: 'Approvals', href: '/dashboard/admin/approvals', icon: ClipboardCheck },
+  { label: 'Leave Calendar', href: '/dashboard/admin/leave-calendar', icon: CalendarDays },
+  { label: 'Appraisals', href: '/dashboard/admin/appraisals', icon: Star },
   { label: 'Employees', href: '/dashboard/admin/employees', icon: Users },
   { label: 'Payslips', href: '/dashboard/admin/payslips', icon: FileText },
   { label: 'Reports', href: '/dashboard/admin/reports', icon: BarChart3 },
   { label: 'Settings', href: '/dashboard/admin/settings', icon: Settings },
 ];
 
+const managerNavItems = [
+  { label: 'Dashboard', href: '/dashboard/manager', icon: Home },
+  { label: 'My Team', href: '/dashboard/manager/team', icon: UsersRound },
+  { label: 'Leave Approvals', href: '/dashboard/manager/approvals', icon: ClipboardCheck },
+  { label: 'Attendance', href: '/dashboard/manager/attendance', icon: Clock },
+  { label: 'Appraisals', href: '/dashboard/manager/appraisals', icon: Star },
+  { label: 'My Leave', href: '/dashboard/manager/leave', icon: Calendar },
+  { label: 'Leave Calendar', href: '/dashboard/manager/leave-calendar', icon: CalendarDays },
+  { label: 'Payslips', href: '/dashboard/manager/payslips', icon: FileText },
+  { label: 'Payment Requests', href: '/dashboard/manager/payment-requests', icon: CreditCard },
+];
+
 interface SidebarProps {
-  role?: 'employee' | 'admin';
+  role?: 'employee' | 'admin' | 'manager';
 }
 
 export function Sidebar({ role = 'employee' }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { user } = useAuth();
 
-  const navItems = role === 'admin' ? adminNavItems : employeeNavItems;
+  const navItems =
+    role === 'admin' ? adminNavItems : role === 'manager' ? managerNavItems : employeeNavItems;
+  const portalLabel = role === 'admin' ? 'Admin' : role === 'manager' ? 'Manager' : 'Employee';
 
   return (
     <>
@@ -71,9 +98,7 @@ export function Sidebar({ role = 'employee' }: SidebarProps) {
           {/* Logo */}
           <div className="border-b border-border px-6 py-6">
             <h1 className="text-2xl font-bold text-primary">IDRC</h1>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {role === 'admin' ? 'Admin' : 'Employee'} Portal
-            </p>
+            <p className="mt-2 text-xs text-muted-foreground">{portalLabel} Portal</p>
           </div>
 
           {/* Navigation */}
@@ -102,7 +127,7 @@ export function Sidebar({ role = 'employee' }: SidebarProps) {
 
           {/* Footer */}
           <div className="border-t border-border px-4 py-4">
-            <p className="text-xs text-muted-foreground">{currentUser.employeeId}</p>
+            <p className="text-xs text-muted-foreground">{user?.employeeId ?? ''}</p>
           </div>
         </div>
       </aside>
